@@ -11,7 +11,6 @@
     "deploy": "git push heroku master",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push origin master && npm run deploy",
     "logs:prod": "heroku logs --tail"
-
   },
   "repository": {
     "type": "git",
@@ -31,6 +30,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.2",
+    "mongoose": "^6.1.8",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
