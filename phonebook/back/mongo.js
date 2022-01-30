@@ -1,14 +1,10 @@
 const mongoose = require('mongoose')
-/*
-// print process.argv
-process.argv.forEach((val, index) => {
-  console.log(`${index}: ${val}`);
-});
-*/
+
 if (process.argv.length < 3) {
   console.log('Please provide the password as an argument: node mongo.js <password>');
   process.exit(1)
 }
+
 const password = process.argv[2]
 const name = process.argv[3]
 const number = process.argv[4]
@@ -23,14 +19,12 @@ const personSchema = new mongoose.Schema({
   number: String
 })
 
-
 const Person = mongoose.model('Person', personSchema)
 
 const person = new Person({
   name: name,
   number: number
 })
-
 
 if (process.argv.length === 5) {
   person.save().then(result => {
@@ -48,5 +42,3 @@ else {
     mongoose.connection.close()
   })
 }
-
-
