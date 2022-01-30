@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
@@ -11,10 +12,8 @@ app.use(express.static('build'))
 morgan.token('person', req => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :person'))
 
-
 app.get('/api/persons', (req, res) => {
-  Person.find({}).then(persons => res.json(persons)
-  )
+  Person.find({}).then(persons => res.json(persons))
 })
 
 app.get('/info', (req, res) => {
@@ -36,35 +35,23 @@ app.delete('/api/persons/:id', (req, res) => {
   res.status(204).end()
 })
 
-const generateRandomId = (min=1, max=9999) => {
-  //The maximum is exclusive and the minimum is inclusive
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min) + min)
-}
-
 app.post('/api/persons', (req, res) => {
-  const personsNames = persons.map(name => name.name.toLowerCase())
-  const errorHandler = message => {
-    return res.status(400).json({
-      error: message
-    })
-  }
-
+  console.log('post body=', req.body);
   const body = req.body
-  
-  const person = {
-    "id": generateRandomId(),
-    "name": body.name || errorHandler('Person must have a name.'),
-    "number": body.number || errorHandler('Person must have a phone number.'),
-  }
-  
-  if (personsNames.includes(person.name.toLowerCase())) {
-    return errorHandler(`${person.name} is already registered in the phonebook.`)
-  }
 
-  persons = persons.concat(person)
-  res.json(person)
+  if (body.name === undefined) {
+    return res.status(400).json({ error: 'content missing'})
+  }
+  
+  const person = new Person({
+    name: body.name,
+    number: body.number
+  })
+
+  person.save().then(savedPerson => {
+    console.log('person saved!')
+    res.json(savedPerson)
+  })
 })
 
 
