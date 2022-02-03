@@ -4,6 +4,7 @@ const morgan = require('morgan')
 const app = express()
 const cors = require('cors')
 const Person = require('./models/person')
+const { response } = require('express')
 
 app.use(express.json())
 app.use(cors())
@@ -12,8 +13,18 @@ app.use(express.static('build'))
 morgan.token('person', req => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :person'))
 
-app.get('/api/persons', (req, res) => {
+const errorHandler = (error, req, res, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return res.status(400).send({ error: 'malformatted id'})
+  }
+}
+
+app.get('/api/persons', (req, res, next) => {
   Person.find({}).then(persons => res.json(persons))
+    .catch(error => next(error))
+
 })
 
 app.get('/info', (req, res) => {
@@ -36,11 +47,10 @@ app.delete('/api/persons/:id', (req, res, next) => {
     .catch(error => next(error))
 })
 
-app.post('/api/persons', (req, res) => {
-  console.log('post body=', req.body);
+app.post('/api/persons', (req, res, next) => {
   const body = req.body
 
-  if (body.name === undefined) {
+  if (!body.name || !body.number) {
     return res.status(400).json({ error: 'content missing'})
   }
   
@@ -55,6 +65,28 @@ app.post('/api/persons', (req, res) => {
   })
 })
 
+app.put('/api/persons/:id', (req, res, next) => {
+  const body = req.body
+
+  const person = {
+    name: body.name,
+    number: body.number
+  }
+
+  Person.findByIdAndUpdate(req.params.id, person, { new: true})
+    .then(updatedNote => {
+      res.json(updatedNote)
+    })
+    .catch(error => next(error))
+})
+
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: 'unknown endpoint'})
+}
+
+app.use(unknownEndpoint)
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
