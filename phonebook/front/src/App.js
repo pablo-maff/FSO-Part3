@@ -35,20 +35,23 @@ const App = () => {
       window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)
       && updateData(...personsIds)
       : phonebookService.create(nameObject)
-        .then(returnedNote => {
-          setPersons(persons.concat(returnedNote))
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
         })
         .then(() => {
-          setMessage(
-          `Added ${newName}`
-        )
+          setMessage(`Added ${newName}`)
         setTimeout(() => {
           setMessage(null)
-        }, 5000
-        )
-      })
+        }, 5000)
+        })
+        .catch(error => {
+          setMessage(`ERROR: ${error.response.data.error}`)
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+        })
   }
 
   const updateData = id => {
@@ -69,9 +72,9 @@ const App = () => {
         }, 5000
         )
       })
-        .catch(() => {
+        .catch(error => {
         setMessage(
-          `ERROR: Information of ${person.name} has already been removed from the server`
+          `ERROR: ${error.response.data.error}`
         )
         setTimeout(error => {
           setMessage(null)

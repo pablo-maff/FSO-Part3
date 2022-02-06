@@ -13,8 +13,15 @@ mongoose.connect(url)
   })
 
 const personSchema = new mongoose.Schema({
-  name: String,
-  number: String
+  name: {
+    type: String,
+    minLength: [3, 'Name must be at least 3 characters long!'],
+    required: true
+  },
+  number: {
+    type: String,
+    required: [true, 'You must insert a phone number!'],
+  }
 })
 
 
