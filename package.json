@@ -4,7 +4,7 @@
   "description": "[Full Stack Open 2021](https://fullstackopen.com/en/ ) course exercises.",
   "main": "./phonebook/back/index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "./phonebook/back/index.js",
     "dev": "nodemon index.js",
     "test": "\"echo \\\"Error: no test specified\\\" && exit 1 \"",
     "build:ui": "rm -rf build && cd ../front && npm run build && cp -r build ../back",
