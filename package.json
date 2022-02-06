@@ -2,7 +2,7 @@
   "name": "fso-part3-backend",
   "version": "0.0.1",
   "description": "[Full Stack Open 2021](https://fullstackopen.com/en/ ) course exercises.",
-  "main": "index.js",
+  "main": "./phonebook/back/index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
